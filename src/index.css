@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Background Hierarchy - Dark Mode Default */
+    --bg-primary: 240 10% 8%;
+    /* #13141A */
+    --bg-secondary: 240 10% 11%;
+    /* #1A1B23 */
+    --bg-tertiary: 240 10% 14%;
+    /* #21222C */
+    --bg-hover: 240 10% 18%;
+    /* #2A2B35 */
+
+    /* Text Colors */
+    --text-primary: 240 10% 95%;
+    /* #F0F0F2 */
+    --text-secondary: 240 5% 70%;
+    /* #AFAFB5 */
+    --text-tertiary: 240 5% 55%;
+    /* #868690 */
+    --text-disabled: 240 5% 40%;
+    /* #62626A */
+
+    /* Brand Colors (Dewana Heritage) */
+    --brand-orange: 18 100% 60%;
+    /* #FF7A3D */
+    --brand-orange-hover: 18 100% 55%;
+    --brand-orange-light: 18 100% 90%;
+    --brand-orange-dark: 18 100% 40%;
+
+    --brand-magenta: 338 76% 49%;
+    /* #D81E5B */
+    --brand-magenta-hover: 338 76% 45%;
+    --brand-magenta-light: 338 76% 90%;
+
+    --brand-gold: 36 90% 62%;
+    /* #F5A623 */
+    --brand-gold-hover: 36 90% 58%;
+    --brand-gold-light: 36 90% 92%;
+
+    /* Complementary Colors */
+    --brand-emerald: 158 64% 40%;
+    /* #249866 */
+    --brand-blue: 215 80% 50%;
+    /* #1A73E8 */
+    --brand-rose: 350 80% 72%;
+    /* #F097AC */
+
+    /* Semantic Colors */
+    --success: 158 64% 40%;
+    --success-bg: 158 64% 12%;
+
+    --warning: 36 90% 62%;
+    --warning-bg: 36 90% 12%;
+
+    --error: 0 84% 60%;
+    --error-bg: 0 84% 12%;
+
+    --info: 215 80% 50%;
+    --info-bg: 215 80% 12%;
+
+    /* Borders */
+    --border: 240 10% 25%;
+    --input: 240 10% 25%;
+    --ring: 18 100% 60%;
+
+    /* Spacing & Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+
+    --shadow-glow-orange: 0 0 30px hsla(18, 100%, 60%, 0.3);
+    --shadow-glow-magenta: 0 0 30px hsla(338, 76%, 49%, 0.3);
+    --shadow-glow-gold: 0 0 30px hsla(36, 90%, 62%, 0.3);
+    --shadow-focus: 0 0 0 3px hsla(18, 100%, 60%, 0.3);
+
+    /* Typography Scale */
+    --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+    --text-sm: clamp(0.875rem, 0.8rem + 0.25vw, 1rem);
+    --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem);
+    --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+    --text-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);
+    --text-3xl: clamp(1.875rem, 1.65rem + 1.125vw, 2.25rem);
+    --text-4xl: clamp(2.25rem, 1.95rem + 1.5vw, 3rem);
+    --text-5xl: clamp(3rem, 2.5rem + 2.5vw, 4rem);
+
+    /* Animation config */
+    --radix-accordion-content-height: 0;
+
+    /* Legacy mapping for backward compatibility if needed, but updated */
+    --background: var(--bg-primary);
+    --foreground: var(--text-primary);
+    --card: var(--bg-secondary);
+    --card-foreground: var(--text-primary);
+    --popover: var(--bg-tertiary);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--brand-orange);
+    --primary-foreground: 0 0% 100%;
+    --secondary: var(--brand-magenta);
+    --secondary-foreground: 0 0% 100%;
+    --muted: var(--bg-tertiary);
+    --muted-foreground: var(--text-tertiary);
+    --accent: var(--brand-gold);
+    --accent-foreground: 0 0% 10%;
+    --destructive: var(--error);
+    --destructive-foreground: 0 0% 100%;
+
+    --sidebar-background: var(--bg-primary);
+    --sidebar-foreground: var(--text-primary);
+    --sidebar-primary: var(--brand-orange);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: var(--bg-hover);
+    --sidebar-accent-foreground: var(--text-primary);
+    --sidebar-border: var(--border);
+    --sidebar-ring: 18 100% 60%;
+  }
+
+  .light {
+    /* Background Hierarchy - Light Mode */
+    --bg-primary: 240 20% 98%;
+    --bg-secondary: 240 20% 95%;
+    --bg-tertiary: 240 20% 92%;
+    --bg-hover: 240 20% 88%;
+
+    /* Text Colors */
+    --text-primary: 240 10% 10%;
+    --text-secondary: 240 5% 40%;
+    --text-tertiary: 240 5% 55%;
+    --text-disabled: 240 5% 70%;
+
+    /* Borders */
+    --border: 240 10% 80%;
+    --input: 240 10% 80%;
+
+    /* Semantic Backgrounds */
+    --success-bg: 158 64% 95%;
+    --warning-bg: 36 90% 95%;
+    --error-bg: 0 84% 95%;
+    --info-bg: 215 80% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased font-body;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl font-display font-bold;
+  }
+
+  /* Date/Time Input fixes */
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    @apply appearance-none bg-transparent;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.2s;
+  }
+
+  .light input[type="date"]::-webkit-calendar-picker-indicator,
+  .light input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator:hover,
+  input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+
+  /* Gradients */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-magenta)));
+  }
+
+  .gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--brand-gold)), hsl(28, 85%, 55%));
+  }
+
+  .gradient-festive {
+    background: linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-gold)), hsl(var(--brand-magenta)));
+  }
+
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-magenta)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/60 dark:bg-black/60 backdrop-blur-md border border-black/5 dark:border-white/10;
+  }
+
+  .glass-card {
+    @apply bg-white/80 dark:bg-gray-900/60 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-xl transition-all duration-300;
+  }
+
+  /* Add specific gradients for extra flair if needed, but keep it readable */
+  .dark .glass-card {
+    background: linear-gradient(135deg, hsla(240, 10%, 20%, 0.6) 0%, hsla(240, 10%, 15%, 0.4) 100%);
+  }
+
+  .glass-subtle {
+    @apply bg-transparent dark:bg-white/5 backdrop-blur-sm border border-black/5 dark:border-white/5;
+  }
+
+  /* Micro-interactions */
+  .hover-lift {
+    @apply transition-transform duration-300 ease-out hover:-translate-y-1;
+  }
+
+  .hover-glow {
+    @apply transition-shadow duration-300 ease-out hover:shadow-glow-orange;
+  }
+
+  .tap-scale {
+    @apply transition-transform duration-150 ease-out active:scale-95;
+  }
+
+  /* Patterns */
+  .pattern-grid {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  }
+}
+
+/* Zomato-style Theme Transition */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
