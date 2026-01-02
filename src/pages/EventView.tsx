@@ -134,11 +134,11 @@ export default function EventView() {
   };
 
   const trackView = async (eventId: string) => {
-    await supabase.from("event_views").insert({ event_id: eventId });
     try {
+      await supabase.from("event_views").insert({ event_id: eventId });
       await supabase.rpc("increment_view_count", { event_id: eventId });
     } catch (error) {
-      // Silent fail fallback
+      console.warn("Analytics tracking failed:", error);
     }
   };
 
@@ -166,20 +166,7 @@ export default function EventView() {
 
       if (error) throw error;
 
-      // Create notifications
-      // 1. Notify the host
-      const { data: eventData } = await supabase.from('events').select('user_id').eq('id', event.id).single();
-      if (eventData) {
-        await supabase.from('notifications').insert({
-          user_id: eventData.user_id,
-          title: rsvpForm.status === 'yes' ? "New RSVP Received! 🎉" : "RSVP Updated",
-          message: `${rsvpForm.guest_name} responded '${rsvpForm.status.toUpperCase()}' to "${event.event_name}".`,
-          type: "rsvp_alert",
-          event_id: event.id,
-        });
-      }
-
-      // 2. Notify the guest (confirmation)
+      // 2. Notify the guest (confirmation) if they are logged in
       if (user) {
         await supabase.from('notifications').insert({
           user_id: user.id,
@@ -493,55 +480,75 @@ export default function EventView() {
                     )}
                   </div>
                 ) : event.rsvp_enabled ? (
-                  <form onSubmit={handleRSVPSubmit} className="space-y-6 text-left">
-                    <div className="grid md:grid-cols-2 gap-4">
+                  !user ? (
+                    <div className="bg-background/80 backdrop-blur p-8 rounded-xl border border-primary/20 text-center">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Heart className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-2">Sign In to RSVP</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Please sign in to let us know if you'll be joining this celebration.
+                      </p>
+                      <Button
+                        onClick={() => navigate('/auth')}
+                        variant="hero"
+                        size="lg"
+                        className="shadow-glow-orange"
+                      >
+                        Sign In to Continue
+                      </Button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleRSVPSubmit} className="space-y-6 text-left">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <Label>Full Name *</Label>
+                          <Input required value={rsvpForm.guest_name} onChange={e => setRsvpForm({ ...rsvpForm, guest_name: e.target.value })} placeholder="Your Name" />
+                        </div>
+                        <div>
+                          <Label>Email *</Label>
+                          <Input type="email" required value={rsvpForm.guest_email} onChange={e => setRsvpForm({ ...rsvpForm, guest_email: e.target.value })} placeholder="email@example.com" disabled={!!user?.email} />
+                        </div>
+                      </div>
+
                       <div>
-                        <Label>Full Name *</Label>
-                        <Input required value={rsvpForm.guest_name} onChange={e => setRsvpForm({ ...rsvpForm, guest_name: e.target.value })} placeholder="Your Name" />
+                        <Label className="mb-2 block">Will you attend?</Label>
+                        <div className="grid grid-cols-3 gap-3">
+                          {['yes', 'maybe', 'no'].map(opt => (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setRsvpForm({ ...rsvpForm, status: opt as any })}
+                              className={cn(
+                                "py-3 rounded-lg border font-medium capitalize transition-all",
+                                rsvpForm.status === opt
+                                  ? "bg-primary text-white border-primary shadow-md transform scale-105"
+                                  : "bg-background text-muted-foreground border-border hover:bg-muted"
+                              )}
+                            >
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
                       </div>
+
+                      {rsvpForm.status === 'yes' && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}>
+                          <Label>Total Guests (including you)</Label>
+                          <Input type="number" min="1" max="10" value={rsvpForm.num_guests} onChange={e => setRsvpForm({ ...rsvpForm, num_guests: parseInt(e.target.value) })} />
+                        </motion.div>
+                      )}
+
                       <div>
-                        <Label>Email *</Label>
-                        <Input type="email" required value={rsvpForm.guest_email} onChange={e => setRsvpForm({ ...rsvpForm, guest_email: e.target.value })} placeholder="email@example.com" disabled={!!user?.email} />
+                        <Label>Message (Optional)</Label>
+                        <Textarea value={rsvpForm.message} onChange={e => setRsvpForm({ ...rsvpForm, message: e.target.value })} placeholder="Any food preferences or warm wishes?" />
                       </div>
-                    </div>
 
-                    <div>
-                      <Label className="mb-2 block">Will you attend?</Label>
-                      <div className="grid grid-cols-3 gap-3">
-                        {['yes', 'maybe', 'no'].map(opt => (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => setRsvpForm({ ...rsvpForm, status: opt as any })}
-                            className={cn(
-                              "py-3 rounded-lg border font-medium capitalize transition-all",
-                              rsvpForm.status === opt
-                                ? "bg-primary text-white border-primary shadow-md transform scale-105"
-                                : "bg-background text-muted-foreground border-border hover:bg-muted"
-                            )}
-                          >
-                            {opt}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {rsvpForm.status === 'yes' && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}>
-                        <Label>Total Guests (including you)</Label>
-                        <Input type="number" min="1" max="10" value={rsvpForm.num_guests} onChange={e => setRsvpForm({ ...rsvpForm, num_guests: parseInt(e.target.value) })} />
-                      </motion.div>
-                    )}
-
-                    <div>
-                      <Label>Message (Optional)</Label>
-                      <Textarea value={rsvpForm.message} onChange={e => setRsvpForm({ ...rsvpForm, message: e.target.value })} placeholder="Any food preferences or warm wishes?" />
-                    </div>
-
-                    <Button type="submit" variant="hero" size="lg" className="w-full text-lg shadow-glow-orange" disabled={submittingRSVP}>
-                      {submittingRSVP ? <Loader2 className="animate-spin" /> : "Confirm Attendance"}
-                    </Button>
-                  </form>
+                      <Button type="submit" variant="hero" size="lg" className="w-full text-lg shadow-glow-orange" disabled={submittingRSVP}>
+                        {submittingRSVP ? <Loader2 className="animate-spin" /> : "Confirm Attendance"}
+                      </Button>
+                    </form>
+                  )
                 ) : (
                   <p className="text-muted-foreground italic">RSVPs are currently closed for this event.</p>
                 )}
